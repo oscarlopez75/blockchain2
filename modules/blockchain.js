@@ -6,7 +6,7 @@ var Blocks     = require('../models/block.model');
 var block = function (empty, data){
   return new Promise(function(resolve, reject){
     if(empty){
-      resolve(new blockMod.Block(0, data.timestamp, {amount: data.amount, login: data.login}, '0'));
+      resolve(new blockMod.Block(0, data.timestamp, 'Genesis block', '0'));
     }else{
       Blocks.find({}, null, {sort: {index: 1}}, function(err, docs){
         if(err){
@@ -31,14 +31,16 @@ var block = function (empty, data){
 
 var isChainValid = function(docs){
   return new Promise(function(resolve, reject){
-    console.log(docs.length);
-    console.log(docs);
-    for(let i = 0; i < docs.length; i++){
-      const currentBlock = docs[i];
-      const previousBlock = docs[i - 1];
+    for(let i = 1; i < docs.length; i++){
+      let currentBlock = docs[i];
+      let previousBlock = docs[i - 1];
+
       if(currentBlock.hash != calHash.mineBlock(currentBlock.index, currentBlock.previousHash, currentBlock.timestamp, JSON.stringify(currentBlock.data).toString())){
-          reject('Not able to add the new block since some one fucked with block ' + currentBlock.index);
+        reject('Not able to add the new block since some one fucked with block ' + currentBlock.index);
+      }else if(currentBlock.previousHash != previousBlock.hash){
+        reject('There is a block missing between block ' + previousBlock.index + ' and block ' + currentBlock.index);
       }
+
     }
     resolve("Chain correct");
   });
