@@ -15,7 +15,7 @@ var getInfo = (data, callback) =>{
             callback(false, "Genesis Block added");
           })
           .catch(function(err) {
-            callback(true, "Genesis Block not added");
+            callback(true, err);
           });
       }else{
         addNew(data)
@@ -23,7 +23,7 @@ var getInfo = (data, callback) =>{
             callback(false, "New Block added");
           })
           .catch(function(err){
-            callback(true, "New Block not added")
+            callback(true, err);
           });
       }
     })

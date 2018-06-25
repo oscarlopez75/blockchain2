@@ -1,5 +1,5 @@
 const SHA256 = require('crypto-js/sha256');
-const difficulty = 4;
+const difficulty = 2;
 
 var calculateHash = (index, previousHash, timestamp, data, nonce) => {
   return SHA256(index + previousHash + timestamp + JSON.stringify(data) + nonce).toString();
